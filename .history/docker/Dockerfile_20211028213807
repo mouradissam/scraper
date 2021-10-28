@@ -1,0 +1,19 @@
+FROM python:3.9.7
+
+
+ENV WORKSPACE="/root/ws"
+RUN mkdir ${WORKSPACE}
+WORKDIR ${WORKSPACE}
+
+# setup cryptofeed and other deps
+RUN python -m pip install --upgrade pip
+ADD cryptofeed ${WORKSPACE}/cryptofeed
+WORKDIR ${WORKSPACE}/cryptofeed
+RUN pip install websockets==9.1
+RUN pip install chardet==3.0.4
+RUN pip install Cython
+RUN python setup.py install easy_install "cryptofeed[mongo]"
+RUN pip install -e ".[mongo]"
+
+COPY bitstampfeed.py .
+CMD [ "python", "./bitstampfeed.py" ]
