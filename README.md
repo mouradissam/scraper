@@ -1,12 +1,15 @@
 ## Description
 scraper is a distributed and versatile data crawler.
 
-## Basic Usage
+## Basic Architecture
 A feed requires the following three component to run properly
 1. listener: It could be a messaging bus such as rabbitmq or kafka 
 2. worker: subscribes to a listener and downloads the page content and stores it into a backend.
 3. backend: a redis or nosql backend to store the final data
 
+![Architecture overview](docs/archdiag.png "overview")
+
+## Basic Usage
 ### Example 
 ```python
 from scraper.feeds.google_feed import GoogleFeed

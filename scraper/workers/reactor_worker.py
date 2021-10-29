@@ -54,3 +54,5 @@ class ReactorWorker(AbstractWorker):
     async def push(self, data: List[LinkData]) -> None:
         for linkdata in data:
             await self.queue.put(linkdata)
+        # indicate the publisher is done
+        await self.queue.put(None)
