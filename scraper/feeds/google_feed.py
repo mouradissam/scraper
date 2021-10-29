@@ -10,7 +10,7 @@ LOG = logging.getLogger("vaper")
 
 
 class GoogleFeed(AbstractFeed):
-    default_params = {"default_location": "Austin,Texas"}
+    default_params = {"default_location": "Austin,Texas", "default_res_per_page": 5}
 
     def __init__(self, listener: AbstractListener = None, **kwargs) -> None:
         super().__init__(moniker="GoogleFeed", listener=listener, **kwargs)
@@ -28,14 +28,19 @@ class GoogleFeed(AbstractFeed):
     async def search_cmd(self, queries, location=None, **kwargs) -> None:
         self.location = location if location else self.default_location
         search = GoogleSearch(
-            {"location": self.location, "async": True, "api_key": self.api_key}
+            {
+                "location": self.location,
+                "async": True,
+                "api_key": self.api_key,
+                "num": self.default_res_per_page,
+            }
         )
         for query in queries:
             LOG.info(f"Executing query '{query}'")
             search.params_dict["q"] = query
             result = search.get_dict()
-            # if "error" in result:
-            #     LOG.error(result["error"])
-            #     continue
+            if "error" in result:
+                LOG.error(result["error"])
+                continue
             for r in result["organic_results"]:
                 await self.listener.push([LinkData(r["link"])])
