@@ -12,11 +12,10 @@ LOG = logging.getLogger("vaper")
 
 
 class ReactorWorker(AbstractWorker):
-    default_params = {"num_workers": 4, "queue_size": 100}
+    default_params = {"num_workers": 4, "queue_size": 100, "request_timeout_sec": 5}
 
     def __init__(
-        self, backend: AbstractBackend, moniker: str = "ReactorWorker", 
-        **kwargs
+        self, backend: AbstractBackend, moniker: str = "ReactorWorker", **kwargs
     ) -> None:
         self.__dict__.update(self.default_params)
         super().__init__(moniker=moniker, backend=backend, **kwargs)
@@ -35,7 +34,9 @@ class ReactorWorker(AbstractWorker):
         while True:
             async with self.read_queue() as link:
                 async with aiohttp.ClientSession() as session:
-                    async with session.get(link.data, ssl=False) as response:
+                    async with session.get(
+                        link.data, timeout=self.request_timeout_sec, ssl=False
+                    ) as response:
                         LOG.debug(f"[{label} is downloading link]: {link.data}")
                         resp = await response.text()
                         await self.backend.push([resp])
@@ -54,5 +55,3 @@ class ReactorWorker(AbstractWorker):
     async def push(self, data: List[LinkData]) -> None:
         for linkdata in data:
             await self.queue.put(linkdata)
-        # indicate the publisher is done
-        await self.queue.put(None)
