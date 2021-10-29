@@ -1,3 +1,10 @@
+- [Description](#description)
+- [Basic Architecture](#basic-architecture)
+- [Basic Usage](#basic-usage)
+  - [Example](#example)
+  - [TODO](#todo)
+
+
 ## Description
 scraper is a distributed and versatile data crawler.
 
@@ -27,4 +34,5 @@ async with google_feed.boot() as feed:
 ```
 
 ### TODO
-document the code
+- Document the code
+- Put producers and consumers in separate event loops to allow for better concurrency 
