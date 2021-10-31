@@ -4,13 +4,21 @@ from .abstract_feed import AbstractFeed
 from ..listeners.abstract_listener import AbstractListener
 from ..link_data import LinkData
 from ..exceptions import SearchError
+from queue import Queue
+import time
+import re
+import asyncio
 
 
 LOG = logging.getLogger("vaper")
 
 
 class GoogleFeed(AbstractFeed):
-    default_params = {"default_location": "Austin,Texas", "default_res_per_page": 5}
+    default_params = {
+        "default_location": "Austin,Texas",
+        "default_res_per_page": 5,
+        "default_pause_time": 0.1,
+    }
 
     def __init__(self, listener: AbstractListener = None, **kwargs) -> None:
         super().__init__(moniker="GoogleFeed", listener=listener, **kwargs)
@@ -26,6 +34,7 @@ class GoogleFeed(AbstractFeed):
         pass
 
     async def search_cmd(self, queries, location=None, **kwargs) -> None:
+        search_queue = Queue()
         self.location = location if location else self.default_location
         search = GoogleSearch(
             {
@@ -42,5 +51,20 @@ class GoogleFeed(AbstractFeed):
             if "error" in result:
                 LOG.error(result["error"])
                 continue
-            for r in result["organic_results"]:
-                await self.listener.push([LinkData(r["link"])])
+            search_queue.put(result)
+
+        # wait until all search statuses are cached or success
+        while not search_queue.empty():
+            result = search_queue.get()
+            search_id = result["search_metadata"]["id"]
+
+            # retrieve search from the archive - blocker
+            search_archived = search.get_search_archive(search_id)
+            if re.search(
+                "Cached|Success", search_archived["search_metadata"]["status"]
+            ):
+                for r in result["organic_results"]:
+                    await self.listener.push([LinkData(r["link"])])
+            else:
+                search_queue.put(result)
+                await asyncio.sleep(self.default_pause_time)

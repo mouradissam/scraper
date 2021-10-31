@@ -1,5 +1,4 @@
 import asynctest
-from asynctest.mock import Mock
 from scraper.feeds.google_feed import GoogleFeed
 from scraper.listeners.reactor_listener import ReactorListener
 from scraper.backends.memory_backend import MemoryBackend
@@ -26,6 +25,7 @@ class TestGoogleFeedWorkflow(asynctest.TestCase):
 
         await feed.start()
         await feed.search_cmd(["Bitcoin"])
+        await feed.stop()
         await listener.stop()
         await worker.stop()
         await backend.stop()

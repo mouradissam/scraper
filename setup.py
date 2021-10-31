@@ -39,7 +39,6 @@ setup(
     long_description_content_type="text/markdown",
     license="XFree86",
     keywords=["Google crawler", "Web crawler", "Web scraper"],
-    # url="https://github.com/bmoscon/cryptofeed",
     packages=find_packages(exclude=["tests*"]),
     cmdclass={"test": Test},
     python_requires=">=3.7",

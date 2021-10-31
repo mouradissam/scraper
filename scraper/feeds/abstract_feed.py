@@ -58,6 +58,7 @@ class AbstractFeed(ABC):
     async def boot(self): 
         await self.start()
         yield self 
+        await self.stop()
         await self.listener.stop()
         await self.listener.worker.stop()
         await self.listener.worker.backend.stop()

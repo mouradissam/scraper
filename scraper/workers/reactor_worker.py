@@ -22,6 +22,7 @@ class ReactorWorker(AbstractWorker):
         self.queue = asyncio.Queue(maxsize=self.queue_size)
         self.loop = backend.loop
         self.workers = []
+        self.worker_monikers = []
 
     @asynccontextmanager
     async def read_queue(self):
@@ -29,27 +30,31 @@ class ReactorWorker(AbstractWorker):
         yield update
         self.queue.task_done()
 
-    async def worker(self, label):
-        LOG.info(f"launching {label}...")
+    async def worker(self, moniker):
+        LOG.info(f"launching {moniker} ...")
         while True:
             async with self.read_queue() as link:
                 async with aiohttp.ClientSession() as session:
                     async with session.get(
                         link.data, timeout=self.request_timeout_sec, ssl=False
                     ) as response:
-                        LOG.debug(f"[{label} is downloading link]: {link.data}")
+                        LOG.debug(f"[{moniker} is downloading link]: {link.data}")
                         resp = await response.text()
                         await self.backend.push([resp])
 
     async def setup(self):
         for i in range(self.num_workers):
-            worker = self.loop.create_task(self.worker(f"worker-{i}"))
-            self.workers.append(worker)
+            moniker = f"worker-{i}"
+            task = self.loop.create_task(self.worker(moniker))
+            self.workers.append(task)
+            self.worker_monikers.append(moniker)
+        await asyncio.sleep(0.0001)
 
     async def tear_down(self):
         await self.queue.join()
-        for task in self.workers:
-            task.cancel()
+        for i in range(0, len(self.workers)):
+            LOG.debug(f"cancelling {self.worker_monikers[i]}...")
+            self.workers[i].cancel()
         await asyncio.gather(*self.workers, return_exceptions=True)
 
     async def push(self, data: List[LinkData]) -> None:
