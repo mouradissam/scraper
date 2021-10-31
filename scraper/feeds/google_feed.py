@@ -57,8 +57,6 @@ class GoogleFeed(AbstractFeed):
         while not search_queue.empty():
             result = search_queue.get()
             search_id = result["search_metadata"]["id"]
-
-            # retrieve search from the archive - blocker
             search_archived = search.get_search_archive(search_id)
             if re.search(
                 "Cached|Success", search_archived["search_metadata"]["status"]
