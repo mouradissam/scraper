@@ -1,9 +1,6 @@
 import asynctest
-from asynctest.mock import Mock
-
 from scraper.workers.reactor_worker import ReactorWorker
 from scraper.link_data import LinkData
-from scraper.backends.memory_backend import MemoryBackend
 from ..backends.mock_backend import MockBackend
 
 

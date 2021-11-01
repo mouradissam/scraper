@@ -59,7 +59,8 @@ class AbstractBackend(ABC):
         if self.status != Status.STOPPED:
             self.status = Status.STOPPED
             LOG.info(
-                f"stopping listener {self.moniker}... Uptime {self.end_time - self.start_time:.2f}s"
+                f"stopping listener {self.moniker}... "
+                f"Uptime {self.end_time - self.start_time:.2f}s"
             )
             await self.queue.join()
             self.pop_task.cancel()

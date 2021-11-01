@@ -1,10 +1,7 @@
-from abc import ABC, abstractmethod
 import logging
 from .abstract_worker import AbstractWorker
 from ..link_data import LinkData
 from ..backends.abstract_backend import AbstractBackend
-import asyncio
-from contextlib import asynccontextmanager
 from typing import List
 
 LOG = logging.getLogger("KafkaWorker")

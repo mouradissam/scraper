@@ -1,8 +1,6 @@
 from .abstract_backend import AbstractBackend
-from ..link_data import LinkData 
+from ..link_data import LinkData
 from typing import List
-
-import asyncio
 
 
 class MemoryBackend(AbstractBackend):

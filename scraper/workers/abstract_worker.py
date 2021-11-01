@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 import logging
 from enum import Enum
 import time
-from typing import List
 from ..backends.abstract_backend import AbstractBackend
 from ..link_data import LinkData
 
@@ -37,7 +36,8 @@ class AbstractWorker(ABC):
     async def stop(self) -> None:
         if self.status != Status.STOPPED:
             LOG.info(
-                f"stopping worker {self.moniker}... Uptime {self.end_time - self.start_time:.2f}s"
+                f"stopping worker {self.moniker}... "
+                f"Uptime {self.end_time - self.start_time:.2f}s"
             )
             await self.tear_down()
             self.status = Status.STOPPED

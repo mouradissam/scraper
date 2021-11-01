@@ -1,5 +1,4 @@
 import asynctest
-from asynctest.mock import Mock
 from scraper.listeners.reactor_listener import ReactorListener
 from scraper.link_data import LinkData
 from ..workers.mock_worker import MockWorker
@@ -12,7 +11,7 @@ class TestReactorListener(asynctest.TestCase):
         self.assertEqual(listener.worker.moniker, "MockWorker")
 
     async def push_coroutine(self):
-        worker = MockWorker(loop=self.loop)    
+        worker = MockWorker(loop=self.loop)
         listener = ReactorListener(worker=worker)
 
         await listener.start()

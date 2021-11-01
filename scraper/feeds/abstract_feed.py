@@ -4,7 +4,6 @@ import time
 from enum import Enum
 from contextlib import asynccontextmanager
 from ..listeners.abstract_listener import AbstractListener
-from ..link_data import LinkData
 
 LOG = logging.getLogger("vaper")
 
@@ -36,7 +35,8 @@ class AbstractFeed(ABC):
     async def stop(self) -> None:
         if self.status != Status.STOPPED:
             LOG.info(
-                f"stopping feed {self.moniker}... Uptime {self.end_time - self.start_time:.2f}s"
+                f"stopping feed {self.moniker}... "
+                f"Uptime {self.end_time - self.start_time:.2f}s"
             )
             await self.tear_down()
             self.status = Status.STOPPED
@@ -48,16 +48,15 @@ class AbstractFeed(ABC):
     @abstractmethod
     async def tear_down(self) -> None:
         raise NotImplementedError()
-    
+
     @abstractmethod
     async def search_cmd(self, queries, location=None, **kwargs) -> None:
         raise NotImplementedError()
-    
 
     @asynccontextmanager
-    async def boot(self): 
+    async def boot(self):
         await self.start()
-        yield self 
+        yield self
         await self.stop()
         await self.listener.stop()
         await self.listener.worker.stop()

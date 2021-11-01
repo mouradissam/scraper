@@ -3,9 +3,7 @@ from serpapi import GoogleSearch
 from .abstract_feed import AbstractFeed
 from ..listeners.abstract_listener import AbstractListener
 from ..link_data import LinkData
-from ..exceptions import SearchError
 from queue import Queue
-import time
 import re
 import asyncio
 

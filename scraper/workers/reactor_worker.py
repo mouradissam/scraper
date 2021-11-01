@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 import logging
 from .abstract_worker import AbstractWorker
 from ..link_data import LinkData

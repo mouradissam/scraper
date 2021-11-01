@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 import logging
 from enum import Enum
 import time
-from typing import List
 from ..workers.abstract_worker import AbstractWorker
 from ..link_data import LinkData
 
@@ -21,7 +20,7 @@ class AbstractListener(ABC):
     def __init__(self, moniker: str, worker: AbstractWorker, **kwargs) -> None:
         self.__dict__.update(kwargs)
         self.moniker = moniker
-        self.worker =worker 
+        self.worker = worker
         self.status = Status.STOPPED
 
     async def start(self) -> None:
@@ -37,7 +36,8 @@ class AbstractListener(ABC):
     async def stop(self) -> None:
         if self.status != Status.STOPPED:
             LOG.info(
-                f"stopping listener {self.moniker}... Uptime {self.end_time - self.start_time:.2f}s"
+                f"stopping listener {self.moniker}... "
+                f"Uptime {self.end_time - self.start_time:.2f}s"
             )
             await self.tear_down()
             self.status = Status.STOPPED

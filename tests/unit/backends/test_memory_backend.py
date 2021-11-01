@@ -1,7 +1,6 @@
 import asynctest
-
 from scraper.backends.memory_backend import MemoryBackend
-from scraper.link_data import LinkData 
+from scraper.link_data import LinkData
 
 
 class TestReactorListener(asynctest.TestCase):

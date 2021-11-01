@@ -1,5 +1,5 @@
 """
-Copyright (C) 2021-2022 Issam Mourad 
+Copyright (C) 2021-2022 Issam Mourad
 
 Please see the LICENSE file for the terms and conditions
 associated with this software.

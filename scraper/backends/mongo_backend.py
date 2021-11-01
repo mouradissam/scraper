@@ -1,6 +1,7 @@
 from .abstract_backend import AbstractBackend
-from ..link_data import LinkData 
+from ..link_data import LinkData
 from typing import List
+
 
 class MongoBackend(AbstractBackend):
     def __init__(self, moniker: str = "MemoryBackend", **kwargs) -> None:

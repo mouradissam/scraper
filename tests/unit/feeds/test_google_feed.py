@@ -1,5 +1,4 @@
 import asynctest
-from asynctest.mock import Mock
 from scraper.feeds.google_feed import GoogleFeed
 from ..listeners.mock_listener import MockListener
 
