@@ -3,6 +3,8 @@ from ..link_data import LinkData
 from ..workers.abstract_worker import AbstractWorker
 from typing import List
 
+LOG = logging.getLogger("vaper")
+
 class KafkaListener(AbstractListener):
     default_params = {"topic_name": "link_store"}
 

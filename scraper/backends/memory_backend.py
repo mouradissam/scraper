@@ -5,7 +5,6 @@ from typing import List
 
 class MemoryBackend(AbstractBackend):
     def __init__(self, moniker: str = "MemoryBackend", **kwargs) -> None:
-        self.__dict__.update(self.default_params)
         super().__init__(moniker, **kwargs)
         self.data = []
 
